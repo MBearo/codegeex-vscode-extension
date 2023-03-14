@@ -106,11 +106,11 @@ export function getEndData(
                     timeout: 1000,
                 })
                 .then((res) => {
-                    console.log("测试结束埋点", res);
+                    // console.log("测试结束埋点", res);
                     resolve("");
                 })
                 .catch((e) => {
-                    console.log("结束埋点错误", e);
+                    // console.log("结束埋点错误", e);
                     reject("error");
                 });
         } catch (e) {

@@ -31,6 +31,7 @@ export function getCodeCompletions(
         }
     }
     return new Promise(async (resolve, reject) => {
+        // TODO 这个n没用呀？
         let n = 0;
         if (prompt.length <= 300) {
             n = 3;
@@ -42,7 +43,10 @@ export function getCodeCompletions(
             prompt = prompt.slice(prompt.length - 1200);
             n = 1;
         }
-        let payload = {};
+        let payload:any = {};
+        console.log('--------------prompt start:--------------')
+        console.log(prompt)
+        console.log('--------------prompt end:--------------')
         if (lang.length == 0) {
             payload = {
                 prompt: prompt,
@@ -90,7 +94,7 @@ export function getCodeCompletions(
         try {
             commandid = await getStartData(inputText, prompt, lang, mode);
         } catch (err) {
-            console.log(err);
+            // console.log('getStartDataError:',err);
             commandid = "";
         }
         try {
@@ -98,10 +102,12 @@ export function getCodeCompletions(
             axios
                 .post(API_URL, payload, { proxy: false, timeout: 120000 })
                 .then(async (res) => {
-                    console.log(res);
-                    console.log(
-                        "process time: " + res.data.result.process_time
-                    );
+                    console.log('--------res start:--------------')
+                    console.log(res.data.result);
+                    console.log('--------res end:--------------')
+                    // console.log(
+                    //     "process time: " + res.data.result.process_time
+                    // );
                     if (res?.data.status === 0) {
                         let codeArray = res?.data.result.output.code;
                         const completions = Array<string>();
@@ -113,7 +119,7 @@ export function getCodeCompletions(
                             completions.push(completion);
                         }
                         let timeEnd = new Date().getTime();
-                        console.log(timeEnd - time1, timeEnd - time2);
+                        // console.log(timeEnd - time1, timeEnd - time2);
                         resolve({ completions, commandid });
                     } else {
                         try {

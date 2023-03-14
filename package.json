@@ -71,6 +71,16 @@
                     "type": "webview",
                     "id": "codegeex-translate",
                     "name": "Translation"
+                },
+                {
+                    "type": "webview",
+                    "id": "codegeex-explain",
+                    "name": "Explain"
+                },
+                {
+                    "type": "webview",
+                    "id": "codegeex-library",
+                    "name": "Library"
                 }
             ]
         },

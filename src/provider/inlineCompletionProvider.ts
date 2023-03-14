@@ -23,7 +23,6 @@ function middleOfLineWontComplete(editor: any, document: any) {
     let currentLine = document?.lineAt(cursorPosition.line);
     let lineEndPosition = currentLine?.range.end;
     let selectionTrailingString: vscode.Selection;
-
     selectionTrailingString = new vscode.Selection(
         cursorPosition.line,
         cursorPosition.character,
@@ -195,13 +194,15 @@ export default function inlineCompletionProvider(
                 updateStatusBarItem(myStatusBarItem, g_isLoading, false, "");
                 return;
             } else {
-                console.log("continue");
+                console.log("continue to complete");
             }
-            if (true && !reGetCompletions) {
+            if (!reGetCompletions) {
+                console.log('prompts',prompts)
                 for (let prompt of prompts) {
                     if (textBeforeCursor.trimEnd().indexOf(prompt) != -1) {
                         let completions;
                         completions = trie.getPrefix(textBeforeCursor);
+                        console.log('completions',completions)
                         let useTrim = false;
                         if (completions.length === 0) {
                             completions = trie.getPrefix(
@@ -229,7 +230,9 @@ export default function inlineCompletionProvider(
                                       ""
                                   )
                                 : completions[i].replace(textBeforeCursor, "");
+                            console.log('--------------insertTextStart:---------------')
                             console.log(insertText);
+                            console.log('--------------insertTextEnd:---------------')
                             let needRequest = ["", "\n", "\n\n"];
                             if (
                                 needRequest.includes(insertText) ||
@@ -297,10 +300,12 @@ export default function inlineCompletionProvider(
                     }
                 }
             }
+            //TODO 大于8是为了提供有效prompt？
             if (enableExtension && textBeforeCursor.length > 8) {
                 console.log("try to get");
                 let requestId = new Date().getTime();
                 lastRequest = requestId;
+                // 防抖
                 await new Promise((f) => setTimeout(f, delay));
                 if (lastRequest !== requestId) {
                     return { items: [] };

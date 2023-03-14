@@ -1,0 +1,26 @@
+vscode-dropdown,
+vscode-button {
+    display: block;
+}
+
+vscode-button {
+    display: flex;
+}
+
+.mb-16 {
+    margin-bottom: 16px;
+}
+
+.sub-title {
+    line-height: 1.6;
+}
+
+#highlight {
+    background: #1e1e1e;
+    padding: 1em;
+    display: block;
+}
+.btn-container {
+    display: flex;
+    gap: 10px;
+}

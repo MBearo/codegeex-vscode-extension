@@ -21,7 +21,7 @@ import { enableExtension, onlyKeyControl } from "./param/configures";
 import changeIconColor from "./utils/changeIconColor";
 import { isCurrentLanguageDisable } from "./utils/isCurrentLanguageDisable";
 import survey from "./utils/survey";
-import translationWebviewProvider from "./provider/translationWebviewProvider";
+import SidebarWebviewProvider from './provider/sidebarWebviewProvider';
 import inlineCompletionProviderWithCommand from "./provider/inlineCompletionProviderWithCommand";
 
 let g_isLoading = false;
@@ -203,7 +203,7 @@ export async function activate(context: vscode.ExtensionContext) {
                 "EnableExtension"
             );
             if (editor) {
-                
+
                 changeIconColor(
                     //@ts-ignore
                     enableExtension,
@@ -215,14 +215,51 @@ export async function activate(context: vscode.ExtensionContext) {
             }
         })
     );
-    const tranlationProvider = new translationWebviewProvider(
-        context.extensionUri
+    const tranlationProvider = new SidebarWebviewProvider(
+        context.extensionUri,
+        'translate'
     );
     const translationViewDisposable = vscode.window.registerWebviewViewProvider(
         "codegeex-translate",
         tranlationProvider
     );
-
     context.subscriptions.push(translationViewDisposable);
+    const explainProvider = new SidebarWebviewProvider(
+        context.extensionUri,
+        'explain'
+    );
+    const explainViewDisposable = vscode.window.registerWebviewViewProvider(
+        "codegeex-explain",
+        explainProvider
+    );
+    context.subscriptions.push(explainViewDisposable);
+    const libraryProvider = new SidebarWebviewProvider(
+        context.extensionUri,
+        'library'
+    );
+    const libraryViewDisposable = vscode.window.registerWebviewViewProvider(
+        "codegeex-library",
+        libraryProvider
+    );
+    context.subscriptions.push(libraryViewDisposable);
+    context.subscriptions.push(
+        vscode.window.onDidChangeTextEditorSelection(async ({ textEditor, selections }) => {
+            const text = textEditor.document.getText(selections[0])
+            if (text.trim()) {
+                tranlationProvider.postMessage({
+                    command: 'codegeex.selectedText',
+                    payload: text
+                })
+                explainProvider.postMessage({
+                    command: 'codegeex.selectedText',
+                    payload: text
+                })
+                libraryProvider.postMessage({
+                    command: 'codegeex.selectedText',
+                    payload: text
+                })
+            }
+        }),
+    )
 }
-export function deactivate() {}
+export function deactivate() { }

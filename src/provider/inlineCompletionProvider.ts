@@ -12,7 +12,7 @@ import { updateStatusBarItem } from "../utils/updateStatusBarItem";
 
 let lastRequest = null;
 let trie = new Trie([]);
-let prompts: string[] = [];
+let prompts: Set<string> = new Set();
 let someTrackingIdCounter = 0;
 let delay: number = completionDelay * 1000;
 // let timeExecute: number = 2500;
@@ -358,7 +358,7 @@ export default function inlineCompletionProvider(
                     );
                     return { items: [] };
                 }
-                prompts.push(textBeforeCursor);
+                prompts.add(textBeforeCursor);
                 // Add the generated code to the inline suggestion list
                 let items = new Array<MyInlineCompletionItem>();
                 let cursorPosition = editor.selection.active;
